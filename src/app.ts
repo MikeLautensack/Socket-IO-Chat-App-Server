@@ -7,16 +7,16 @@ import { dirname, join } from "node:path";
 const app = express();
 const server = createServer(app);
 const port = process.env.PORT || 8080;
-const io = new Server(server);
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000",
+  },
+});
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 app.get("/", (req, res) => {
   res.sendFile(join(__dirname, "index.html"));
-});
-
-app.get("/", (req, res) => {
-  res.send("<h1>Hello world....</h1>");
 });
 
 io.on("connection", (socket) => {
