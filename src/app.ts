@@ -11,7 +11,7 @@ const port = process.env.PORT || 8080;
 // Define allowed origins
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://your-production-domain.com", // Add your production domain here
+  "https://socket-io-chat-app-client.vercel.app/", // Add your production domain here
 ];
 
 const io = new Server(server, {
