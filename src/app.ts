@@ -39,12 +39,17 @@ app.get("/", (req, res) => {
 
 io.on("connection", (socket) => {
   console.log("a user connected");
+
   socket.on("disconnect", () => {
     console.log("user disconnected");
   });
-  socket.on("message", (msg) => {
-    console.log("server___ message event");
-    io.emit("message", msg);
+
+  socket.on("message", ({ message, profileImg }) => {
+    io.emit("message", { message, profileImg });
+  });
+
+  socket.on("activity", (username) => {
+    socket.broadcast.emit("activity", username);
   });
 });
 
