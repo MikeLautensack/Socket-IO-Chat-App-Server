@@ -15,6 +15,7 @@ const allowedOrigins = [
 ];
 
 const io = new Server(server, {
+  connectionStateRecovery: {},
   cors: {
     origin: function (origin, callback) {
       // Allow requests with no origin (like mobile apps or curl requests)
