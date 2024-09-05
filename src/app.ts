@@ -1,8 +1,6 @@
 import express from "express";
 import { createServer } from "node:http";
 import { Server } from "socket.io";
-import { fileURLToPath } from "node:url";
-import { dirname, join } from "node:path";
 
 const app = express();
 const server = createServer(app);
@@ -15,7 +13,12 @@ const allowedOrigins = [
 ];
 
 const io = new Server(server, {
-  connectionStateRecovery: {},
+  connectionStateRecovery: {
+    // the backup duration of the sessions and the packets
+    maxDisconnectionDuration: 2 * 60 * 1000,
+    // whether to skip middlewares upon successful recovery
+    skipMiddlewares: true,
+  },
   cors: {
     origin: function (origin, callback) {
       // Allow requests with no origin (like mobile apps or curl requests)
@@ -32,25 +35,38 @@ const io = new Server(server, {
   },
 });
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
 app.get("/", (req, res) => {
-  res.sendFile(join(__dirname, "index.html"));
+  res.send("<h1>Hello world</h1>");
 });
 
 io.on("connection", (socket) => {
   console.log("a user connected");
 
+  const rooms = Array.from(io.sockets.adapter.rooms.keys());
+
+  const roomList = rooms.filter((room) => !io.sockets.adapter.sids.get(room));
+  console.log("rooms list", roomList);
+
+  socket.emit("roomList", roomList);
+
+  socket.on("joinRoom", ({ roomname, username }) => {
+    console.log("testing joinRoom event");
+    socket.join(roomname);
+    console.log("rooms list", roomList);
+    socket.to(roomname).emit("new-user-joined", username);
+    io.emit("updatedRooms", roomList);
+  });
+
   socket.on("disconnect", () => {
     console.log("user disconnected");
   });
 
-  socket.on("message", ({ message, profileImg }) => {
-    io.emit("message", { message, profileImg });
+  socket.on("message", ({ message, profileImg, roomId }) => {
+    io.to(roomId).emit("message", { message, profileImg });
   });
 
-  socket.on("activity", (username) => {
-    socket.broadcast.emit("activity", username);
+  socket.on("activity", ({ username, roomId }) => {
+    socket.broadcast.to(roomId).emit("activity", username);
   });
 });
 
