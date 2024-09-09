@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node dist/app.js",
     "dev": "nodemon node --loader ts-node/esm src/app.ts",
-    "build": "tsc -p . && cp src/index.html dist/index.html",
+    "build": "tsc -p .",
     "test": "jest --verbose --coverage"
   },
   "author": "",
