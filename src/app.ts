@@ -1,6 +1,7 @@
 import express from "express";
 import { createServer } from "node:http";
 import { Server } from "socket.io";
+import StateMachine from "./models/StateMachine";
 
 const app = express();
 const server = createServer(app);
@@ -12,6 +13,10 @@ const allowedOrigins = [
   "https://socket-io-chat-app-client.vercel.app", // Add your production domain here
 ];
 
+// Server State
+const stateMachine = StateMachine.getInstance();
+
+// Server Instance
 const io = new Server(server, {
   connectionStateRecovery: {
     // the backup duration of the sessions and the packets
@@ -40,29 +45,25 @@ app.get("/", (req, res) => {
 });
 
 io.on("connection", (socket) => {
-  console.log("a user connected");
+  const rooms = stateMachine.getRoomNames();
 
-  const rooms = Array.from(io.sockets.adapter.rooms.keys());
+  console.log(`Socket: ${socket.id}, has connected to the server`);
 
-  const roomList = rooms.filter((room) => !io.sockets.adapter.sids.get(room));
-  console.log("rooms list", roomList);
-
-  socket.emit("roomList", roomList);
+  socket.emit("roomList", rooms);
 
   socket.on("joinRoom", ({ roomname, username }) => {
-    console.log("testing joinRoom event");
     socket.join(roomname);
-    console.log("rooms list", roomList);
+    stateMachine.addRoom(roomname);
     socket.to(roomname).emit("new-user-joined", username);
-    io.emit("updatedRooms", roomList);
+    io.emit("updateRooms", stateMachine.getRoomNames());
   });
 
   socket.on("disconnect", () => {
     console.log("user disconnected");
   });
 
-  socket.on("message", ({ message, profileImg, roomId }) => {
-    io.to(roomId).emit("message", { message, profileImg });
+  socket.on("message", ({ message, username, profileImg, roomname }) => {
+    io.to(roomname).emit("message", { message, username, profileImg });
   });
 
   socket.on("activity", ({ username, roomId }) => {
