@@ -2,6 +2,7 @@ import express from "express";
 import { createServer } from "node:http";
 import { Server } from "socket.io";
 import StateMachine from "./models/StateMachine";
+import { timeStamp } from "node:console";
 
 const app = express();
 const server = createServer(app);
@@ -54,17 +55,32 @@ io.on("connection", (socket) => {
   socket.on("joinRoom", ({ roomname, username }) => {
     socket.join(roomname);
     stateMachine.addRoom(roomname);
-    socket.to(roomname).emit("new-user-joined", username);
-    io.emit("updateRooms", stateMachine.getRoomNames());
+    socket.to(roomname).emit("userJoinedRoom", username);
+    io.emit("setRooms", stateMachine.getRoomNames());
+  });
+
+  socket.on("setRoomMessages", (roomname) => {
+    const messages = stateMachine.getRoomMessages(roomname);
+    socket.emit("setRoomMessages", messages);
   });
 
   socket.on("disconnect", () => {
     console.log("user disconnected");
   });
 
-  socket.on("message", ({ message, username, profileImg, roomname }) => {
-    io.to(roomname).emit("message", { message, username, profileImg });
-  });
+  socket.on(
+    "message",
+    ({ message, username, profileImg, roomname, timestamp }) => {
+      stateMachine.addMessageToRoom(
+        roomname,
+        timestamp,
+        message,
+        username,
+        profileImg
+      );
+      io.to(roomname).emit("message", { message, username, profileImg });
+    }
+  );
 
   socket.on("activity", ({ username, roomId }) => {
     socket.broadcast.to(roomId).emit("activity", username);

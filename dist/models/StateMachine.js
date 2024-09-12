@@ -1,4 +1,5 @@
 import { genId } from "../utils/utils";
+import Message from "./Message";
 import Room from "./Room";
 class StateMachine {
     static instance = undefined;
@@ -19,6 +20,13 @@ class StateMachine {
     getRooms() {
         return this.rooms;
     }
+    getRoomMessages(roomname) {
+        this.rooms.forEach((room, key) => {
+            if (room.getName() === roomname) {
+                return room.getMessages();
+            }
+        });
+    }
     getRoomNames() {
         let names = [];
         this.rooms.forEach((value, key) => {
@@ -29,5 +37,14 @@ class StateMachine {
     addRoom(roomname) {
         this.rooms.set(roomname, new Room(roomname));
     }
+    addMessageToRoom(roomname, timestamp, message, username, profileImgURL) {
+        this.rooms.forEach((room, key) => {
+            if (room.getName() === roomname) {
+                const newMessage = new Message(timestamp, message, username, profileImgURL);
+                room.addMessage(newMessage);
+            }
+        });
+    }
 }
 export default StateMachine;
+//# sourceMappingURL=StateMachine.js.map

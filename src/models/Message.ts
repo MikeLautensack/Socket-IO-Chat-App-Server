@@ -32,3 +32,5 @@ class Message {
     return this.profileImgURL;
   }
 }
+
+export default Message;

@@ -1,4 +1,5 @@
 import { genId } from "../utils/utils";
+import Message from "./Message";
 import Room from "./Room";
 
 class StateMachine {
@@ -25,6 +26,14 @@ class StateMachine {
     return this.rooms;
   }
 
+  public getRoomMessages(roomname: string): Message[] | void {
+    this.rooms.forEach((room, key) => {
+      if (room.getName() === roomname) {
+        return room.getMessages();
+      }
+    });
+  }
+
   public getRoomNames(): string[] {
     let names: string[] = [];
 
@@ -36,6 +45,26 @@ class StateMachine {
 
   public addRoom(roomname: string): void {
     this.rooms.set(roomname, new Room(roomname));
+  }
+
+  public addMessageToRoom(
+    roomname: string,
+    timestamp: Date,
+    message: string,
+    username: string,
+    profileImgURL: string
+  ): void {
+    this.rooms.forEach((room, key) => {
+      if (room.getName() === roomname) {
+        const newMessage = new Message(
+          timestamp,
+          message,
+          username,
+          profileImgURL
+        );
+        room.addMessage(newMessage);
+      }
+    });
   }
 }
 

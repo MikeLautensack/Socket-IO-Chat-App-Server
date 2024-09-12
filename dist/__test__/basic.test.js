@@ -52,3 +52,4 @@ describe("my awesome project", () => {
         return waitFor(serverSocket, "baz");
     });
 });
+//# sourceMappingURL=basic.test.js.map
