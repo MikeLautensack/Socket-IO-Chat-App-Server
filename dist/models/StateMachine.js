@@ -20,30 +20,40 @@ class StateMachine {
     getRooms() {
         return this.rooms;
     }
+    getRoom(roomname) {
+        const room = this.rooms.get(roomname);
+        return room;
+    }
     getRoomMessages(roomname) {
-        this.rooms.forEach((room, key) => {
-            if (room.getName() === roomname) {
-                return room.getMessages();
-            }
-        });
+        const room = this.rooms.get(roomname);
+        return room ? room.getMessages() : [];
     }
     getRoomNames() {
-        let names = [];
-        this.rooms.forEach((value, key) => {
-            names.push(value.getName());
-        });
-        return names;
+        return Array.from(this.rooms.keys());
     }
-    addRoom(roomname) {
-        this.rooms.set(roomname, new Room(roomname));
+    addRoom(roomname, host) {
+        if (!this.rooms.has(roomname)) {
+            this.rooms.set(roomname, new Room(roomname, host));
+        }
     }
-    addMessageToRoom(roomname, timestamp, message, username, profileImgURL) {
-        this.rooms.forEach((room, key) => {
-            if (room.getName() === roomname) {
-                const newMessage = new Message(timestamp, message, username, profileImgURL);
-                room.addMessage(newMessage);
-            }
-        });
+    addMessageToRoom(roomname, timestamp, message, username, profileImgURL, isHost) {
+        let room = this.rooms.get(roomname);
+        const newMessage = new Message(timestamp, message, username, profileImgURL, isHost);
+        room && room.addMessage(newMessage);
+    }
+    addChatUserToRoom(roomname, chatuser) {
+        let room = this.rooms.get(roomname);
+        room?.addChatUser(chatuser);
+    }
+    isUserHost(roomname, username) {
+        let room = this.rooms.get(roomname);
+        let host = room?.getHost();
+        if (host?.getUsername() === username) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 }
 export default StateMachine;

@@ -3,11 +3,13 @@ class Message {
     message;
     username;
     profileImgURL;
-    constructor(timestamp, message, username, profileImgURL) {
+    isHost;
+    constructor(timestamp, message, username, profileImgURL, isHost) {
         this.timestamp = timestamp;
         this.message = message;
         this.username = username;
         this.profileImgURL = profileImgURL;
+        this.isHost = isHost;
     }
     getTimestamp() {
         return this.timestamp;
@@ -20,6 +22,9 @@ class Message {
     }
     getProfileImgURL() {
         return this.profileImgURL;
+    }
+    getIsHost() {
+        return this.isHost;
     }
 }
 export default Message;

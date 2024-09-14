@@ -1,3 +1,4 @@
+import ChatUser from "./ChatUser";
 import Message from "./Message";
 import Room from "./Room";
 declare class StateMachine {
@@ -8,10 +9,13 @@ declare class StateMachine {
     static getInstance(): StateMachine;
     getId(): number;
     getRooms(): Map<string, Room>;
-    getRoomMessages(roomname: string): Message[] | void;
+    getRoom(roomname: string): Room;
+    getRoomMessages(roomname: string): Message[];
     getRoomNames(): string[];
-    addRoom(roomname: string): void;
-    addMessageToRoom(roomname: string, timestamp: Date, message: string, username: string, profileImgURL: string): void;
+    addRoom(roomname: string, host: ChatUser): void;
+    addMessageToRoom(roomname: string, timestamp: Date, message: string, username: string, profileImgURL: string, isHost: boolean): void;
+    addChatUserToRoom(roomname: string, chatuser: ChatUser): void;
+    isUserHost(roomname: string, username: string): boolean;
 }
 export default StateMachine;
 //# sourceMappingURL=StateMachine.d.ts.map

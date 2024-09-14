@@ -1,4 +1,5 @@
 import { genId } from "../utils/utils";
+import ChatUser from "./ChatUser";
 import Message from "./Message";
 import Room from "./Room";
 
@@ -26,25 +27,24 @@ class StateMachine {
     return this.rooms;
   }
 
-  public getRoomMessages(roomname: string): Message[] | void {
-    this.rooms.forEach((room, key) => {
-      if (room.getName() === roomname) {
-        return room.getMessages();
-      }
-    });
+  public getRoom(roomname: string): Room {
+    const room = this.rooms.get(roomname);
+    return room!;
+  }
+
+  public getRoomMessages(roomname: string): Message[] {
+    const room = this.rooms.get(roomname);
+    return room ? room.getMessages() : [];
   }
 
   public getRoomNames(): string[] {
-    let names: string[] = [];
-
-    this.rooms.forEach((value, key) => {
-      names.push(value.getName());
-    });
-    return names;
+    return Array.from(this.rooms.keys());
   }
 
-  public addRoom(roomname: string): void {
-    this.rooms.set(roomname, new Room(roomname));
+  public addRoom(roomname: string, host: ChatUser): void {
+    if (!this.rooms.has(roomname)) {
+      this.rooms.set(roomname, new Room(roomname, host));
+    }
   }
 
   public addMessageToRoom(
@@ -52,19 +52,33 @@ class StateMachine {
     timestamp: Date,
     message: string,
     username: string,
-    profileImgURL: string
+    profileImgURL: string,
+    isHost: boolean
   ): void {
-    this.rooms.forEach((room, key) => {
-      if (room.getName() === roomname) {
-        const newMessage = new Message(
-          timestamp,
-          message,
-          username,
-          profileImgURL
-        );
-        room.addMessage(newMessage);
-      }
-    });
+    let room = this.rooms.get(roomname);
+    const newMessage = new Message(
+      timestamp,
+      message,
+      username,
+      profileImgURL,
+      isHost
+    );
+    room && room.addMessage(newMessage);
+  }
+
+  public addChatUserToRoom(roomname: string, chatuser: ChatUser): void {
+    let room = this.rooms.get(roomname);
+    room?.addChatUser(chatuser);
+  }
+
+  public isUserHost(roomname: string, username: string): boolean {
+    let room = this.rooms.get(roomname);
+    let host = room?.getHost();
+    if (host?.getUsername() === username) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }
 

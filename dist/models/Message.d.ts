@@ -3,11 +3,13 @@ declare class Message {
     private message;
     private username;
     private profileImgURL;
-    constructor(timestamp: Date, message: string, username: string, profileImgURL: string);
+    private isHost;
+    constructor(timestamp: Date, message: string, username: string, profileImgURL: string, isHost: boolean);
     getTimestamp(): Date;
     getMessage(): string;
     getUsername(): string;
     getProfileImgURL(): string;
+    getIsHost(): boolean;
 }
 export default Message;
 //# sourceMappingURL=Message.d.ts.map
