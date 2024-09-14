@@ -1,10 +1,15 @@
-import { genId } from "../utils/utils";
-import Message from "./Message";
-import Room from "./Room";
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const utils_1 = require("../utils/utils");
+const Message_1 = __importDefault(require("./Message"));
+const Room_1 = __importDefault(require("./Room"));
 class StateMachine {
     constructor() {
         this.rooms = new Map();
-        this.id = genId();
+        this.id = (0, utils_1.genId)();
     }
     static getInstance() {
         if (!StateMachine.instance) {
@@ -31,12 +36,12 @@ class StateMachine {
     }
     addRoom(roomname, host) {
         if (!this.rooms.has(roomname)) {
-            this.rooms.set(roomname, new Room(roomname, host));
+            this.rooms.set(roomname, new Room_1.default(roomname, host));
         }
     }
     addMessageToRoom(roomname, timestamp, message, username, profileImgURL, isHost) {
         let room = this.rooms.get(roomname);
-        const newMessage = new Message(timestamp, message, username, profileImgURL, isHost);
+        const newMessage = new Message_1.default(timestamp, message, username, profileImgURL, isHost);
         room && room.addMessage(newMessage);
     }
     addChatUserToRoom(roomname, chatuser) {
@@ -55,5 +60,4 @@ class StateMachine {
     }
 }
 StateMachine.instance = undefined;
-export default StateMachine;
-//# sourceMappingURL=StateMachine.js.map
+exports.default = StateMachine;

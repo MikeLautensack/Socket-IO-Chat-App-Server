@@ -2,7 +2,6 @@ import express from "express";
 import { createServer } from "node:http";
 import { Server } from "socket.io";
 import StateMachine from "./models/StateMachine";
-import { timeStamp } from "node:console";
 import Message from "./models/Message";
 import ChatUser from "./models/ChatUser";
 

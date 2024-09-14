@@ -1,3 +1,5 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 class Message {
     constructor(timestamp, message, username, profileImgURL, isHost) {
         this.timestamp = timestamp;
@@ -22,5 +24,4 @@ class Message {
         return this.isHost;
     }
 }
-export default Message;
-//# sourceMappingURL=Message.js.map
+exports.default = Message;
