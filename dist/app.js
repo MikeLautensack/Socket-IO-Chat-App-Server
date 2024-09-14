@@ -45,9 +45,9 @@ io.on("connection", (socket) => {
         if (!rooms.has(roomname)) {
             stateMachine.addRoom(roomname, new ChatUser(username, profileImg, true));
             let room = stateMachine.getRoom(roomname);
-            let chatusers = room?.getChatters();
+            let chatusers = room === null || room === void 0 ? void 0 : room.getChatters();
             let chatters = [];
-            chatusers?.forEach((user, key) => {
+            chatusers === null || chatusers === void 0 ? void 0 : chatusers.forEach((user, key) => {
                 chatters.push({
                     username: user.getUsername(),
                     profileImg: user.getProfileImg(),
@@ -68,9 +68,9 @@ io.on("connection", (socket) => {
         else {
             let room = stateMachine.getRoom(roomname);
             room.addChatUser(new ChatUser(username, profileImg, username === room.getHost().getUsername() ? true : false));
-            let chatusers = room?.getChatters();
+            let chatusers = room === null || room === void 0 ? void 0 : room.getChatters();
             let chatters = [];
-            chatusers?.forEach((user, key) => {
+            chatusers === null || chatusers === void 0 ? void 0 : chatusers.forEach((user, key) => {
                 chatters.push({
                     username: user.getUsername(),
                     profileImg: user.getProfileImg(),
@@ -94,8 +94,8 @@ io.on("connection", (socket) => {
         const message = "has left the chat!";
         const date = new Date();
         let room = stateMachine.getRoom(roomname);
-        room?.removeChatUser(username);
-        let chatusers = room?.getChatters();
+        room === null || room === void 0 ? void 0 : room.removeChatUser(username);
+        let chatusers = room === null || room === void 0 ? void 0 : room.getChatters();
         let chatters = [];
         chatusers.forEach((user, key) => {
             chatters.push({

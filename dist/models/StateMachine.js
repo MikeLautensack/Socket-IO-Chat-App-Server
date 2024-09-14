@@ -2,10 +2,8 @@ import { genId } from "../utils/utils";
 import Message from "./Message";
 import Room from "./Room";
 class StateMachine {
-    static instance = undefined;
-    id;
-    rooms = new Map();
     constructor() {
+        this.rooms = new Map();
         this.id = genId();
     }
     static getInstance() {
@@ -43,12 +41,12 @@ class StateMachine {
     }
     addChatUserToRoom(roomname, chatuser) {
         let room = this.rooms.get(roomname);
-        room?.addChatUser(chatuser);
+        room === null || room === void 0 ? void 0 : room.addChatUser(chatuser);
     }
     isUserHost(roomname, username) {
         let room = this.rooms.get(roomname);
-        let host = room?.getHost();
-        if (host?.getUsername() === username) {
+        let host = room === null || room === void 0 ? void 0 : room.getHost();
+        if ((host === null || host === void 0 ? void 0 : host.getUsername()) === username) {
             return true;
         }
         else {
@@ -56,5 +54,6 @@ class StateMachine {
         }
     }
 }
+StateMachine.instance = undefined;
 export default StateMachine;
 //# sourceMappingURL=StateMachine.js.map

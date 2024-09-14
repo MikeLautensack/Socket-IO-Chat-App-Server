@@ -1,7 +1,4 @@
 class ChatUser {
-    username;
-    profileImg;
-    isHost;
     constructor(username, profileImg, isHost) {
         this.username = username;
         this.profileImg = profileImg;

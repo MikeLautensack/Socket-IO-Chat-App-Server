@@ -1,9 +1,6 @@
 class Room {
-    name;
-    messages;
-    host;
-    chatters = new Map();
     constructor(name, host) {
+        this.chatters = new Map();
         this.name = name;
         this.host = host;
         this.messages = [];

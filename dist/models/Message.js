@@ -1,9 +1,4 @@
 class Message {
-    timestamp;
-    message;
-    username;
-    profileImgURL;
-    isHost;
     constructor(timestamp, message, username, profileImgURL, isHost) {
         this.timestamp = timestamp;
         this.message = message;

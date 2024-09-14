@@ -1,3 +1,12 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 import { createServer } from "node:http";
 import { io as ioc } from "socket.io-client";
 import { Server } from "socket.io";
@@ -40,13 +49,13 @@ describe("my awesome project", () => {
             done();
         });
     });
-    test("should work with emitWithAck()", async () => {
+    test("should work with emitWithAck()", () => __awaiter(void 0, void 0, void 0, function* () {
         serverSocket.on("foo", (cb) => {
             cb("bar");
         });
-        const result = await clientSocket.emitWithAck("foo");
+        const result = yield clientSocket.emitWithAck("foo");
         expect(result).toBe("bar");
-    });
+    }));
     test("should work with waitFor()", () => {
         clientSocket.emit("baz");
         return waitFor(serverSocket, "baz");
