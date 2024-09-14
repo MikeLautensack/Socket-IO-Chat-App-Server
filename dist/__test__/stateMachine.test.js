@@ -1,19 +1,13 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const ChatUser_1 = __importDefault(require("../models/ChatUser"));
-const StateMachine_1 = __importDefault(require("../models/StateMachine"));
+import ChatUser from "../models/ChatUser";
+import StateMachine from "../models/StateMachine";
 describe("state machine tests", () => {
     let stateMachine;
     beforeAll(() => {
-        // Server State
-        stateMachine = StateMachine_1.default.getInstance();
+        stateMachine = StateMachine.getInstance();
     });
     afterAll(() => { });
     test("getRoomMessages is working", () => {
-        stateMachine.addRoom("test room", new ChatUser_1.default("test username", "test profile img", true));
+        stateMachine.addRoom("test room", new ChatUser("test username", "test profile img", true));
         stateMachine.addMessageToRoom("test room", new Date(), "test message", "test username", "test profile img", true);
         const messages = stateMachine.getRoomMessages("test room");
         expect(messages).toBeDefined();
@@ -23,3 +17,4 @@ describe("state machine tests", () => {
         expect(messages[0].getProfileImgURL()).toBe("test profile img");
     });
 });
+//# sourceMappingURL=stateMachine.test.js.map

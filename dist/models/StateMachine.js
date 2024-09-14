@@ -1,15 +1,12 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const utils_1 = require("../utils/utils");
-const Message_1 = __importDefault(require("./Message"));
-const Room_1 = __importDefault(require("./Room"));
+import { genId } from "../utils/utils";
+import Message from "./Message";
+import Room from "./Room";
 class StateMachine {
+    static instance = undefined;
+    id;
+    rooms = new Map();
     constructor() {
-        this.rooms = new Map();
-        this.id = (0, utils_1.genId)();
+        this.id = genId();
     }
     static getInstance() {
         if (!StateMachine.instance) {
@@ -36,22 +33,22 @@ class StateMachine {
     }
     addRoom(roomname, host) {
         if (!this.rooms.has(roomname)) {
-            this.rooms.set(roomname, new Room_1.default(roomname, host));
+            this.rooms.set(roomname, new Room(roomname, host));
         }
     }
     addMessageToRoom(roomname, timestamp, message, username, profileImgURL, isHost) {
         let room = this.rooms.get(roomname);
-        const newMessage = new Message_1.default(timestamp, message, username, profileImgURL, isHost);
+        const newMessage = new Message(timestamp, message, username, profileImgURL, isHost);
         room && room.addMessage(newMessage);
     }
     addChatUserToRoom(roomname, chatuser) {
         let room = this.rooms.get(roomname);
-        room === null || room === void 0 ? void 0 : room.addChatUser(chatuser);
+        room?.addChatUser(chatuser);
     }
     isUserHost(roomname, username) {
         let room = this.rooms.get(roomname);
-        let host = room === null || room === void 0 ? void 0 : room.getHost();
-        if ((host === null || host === void 0 ? void 0 : host.getUsername()) === username) {
+        let host = room?.getHost();
+        if (host?.getUsername() === username) {
             return true;
         }
         else {
@@ -59,5 +56,5 @@ class StateMachine {
         }
     }
 }
-StateMachine.instance = undefined;
-exports.default = StateMachine;
+export default StateMachine;
+//# sourceMappingURL=StateMachine.js.map

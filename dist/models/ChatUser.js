@@ -1,6 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 class ChatUser {
+    username;
+    profileImg;
+    isHost;
     constructor(username, profileImg, isHost) {
         this.username = username;
         this.profileImg = profileImg;
@@ -16,4 +17,5 @@ class ChatUser {
         return this.isHost;
     }
 }
-exports.default = ChatUser;
+export default ChatUser;
+//# sourceMappingURL=ChatUser.js.map

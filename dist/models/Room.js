@@ -1,8 +1,9 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 class Room {
+    name;
+    messages;
+    host;
+    chatters = new Map();
     constructor(name, host) {
-        this.chatters = new Map();
         this.name = name;
         this.host = host;
         this.messages = [];
@@ -38,4 +39,5 @@ class Room {
         this.chatters.delete(chatter);
     }
 }
-exports.default = Room;
+export default Room;
+//# sourceMappingURL=Room.js.map

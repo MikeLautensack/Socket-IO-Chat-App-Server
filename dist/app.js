@@ -1,34 +1,23 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
-const node_http_1 = require("node:http");
-const socket_io_1 = require("socket.io");
-const StateMachine_1 = __importDefault(require("./models/StateMachine"));
-const ChatUser_1 = __importDefault(require("./models/ChatUser"));
-const app = (0, express_1.default)();
-const server = (0, node_http_1.createServer)(app);
+import express from "express";
+import { createServer } from "node:http";
+import { Server } from "socket.io";
+import StateMachine from "./models/StateMachine";
+import ChatUser from "./models/ChatUser";
+const app = express();
+const server = createServer(app);
 const port = process.env.PORT || 8080;
-// Define allowed origins
 const allowedOrigins = [
     "http://localhost:3000",
-    "https://socket-io-chat-app-client.vercel.app", // Add your production domain here
+    "https://socket-io-chat-app-client.vercel.app",
 ];
-// Server State
-let stateMachine = StateMachine_1.default.getInstance();
-// Server Instance
-const io = new socket_io_1.Server(server, {
+let stateMachine = StateMachine.getInstance();
+const io = new Server(server, {
     connectionStateRecovery: {
-        // the backup duration of the sessions and the packets
         maxDisconnectionDuration: 2 * 60 * 1000,
-        // whether to skip middlewares upon successful recovery
         skipMiddlewares: true,
     },
     cors: {
         origin: function (origin, callback) {
-            // Allow requests with no origin (like mobile apps or curl requests)
             if (!origin)
                 return callback(null, true);
             if (allowedOrigins.indexOf(origin) === -1) {
@@ -51,16 +40,14 @@ io.on("connection", (socket) => {
     socket.on("joinRoom", ({ roomname, username, profileImg }) => {
         const message = "has joined the chat!";
         const date = new Date();
-        // Join Room
         socket.join(roomname);
-        // State Mutations
         const rooms = stateMachine.getRooms();
         if (!rooms.has(roomname)) {
-            stateMachine.addRoom(roomname, new ChatUser_1.default(username, profileImg, true));
+            stateMachine.addRoom(roomname, new ChatUser(username, profileImg, true));
             let room = stateMachine.getRoom(roomname);
-            let chatusers = room === null || room === void 0 ? void 0 : room.getChatters();
+            let chatusers = room?.getChatters();
             let chatters = [];
-            chatusers === null || chatusers === void 0 ? void 0 : chatusers.forEach((user, key) => {
+            chatusers?.forEach((user, key) => {
                 chatters.push({
                     username: user.getUsername(),
                     profileImg: user.getProfileImg(),
@@ -80,10 +67,10 @@ io.on("connection", (socket) => {
         }
         else {
             let room = stateMachine.getRoom(roomname);
-            room.addChatUser(new ChatUser_1.default(username, profileImg, username === room.getHost().getUsername() ? true : false));
-            let chatusers = room === null || room === void 0 ? void 0 : room.getChatters();
+            room.addChatUser(new ChatUser(username, profileImg, username === room.getHost().getUsername() ? true : false));
+            let chatusers = room?.getChatters();
             let chatters = [];
-            chatusers === null || chatusers === void 0 ? void 0 : chatusers.forEach((user, key) => {
+            chatusers?.forEach((user, key) => {
                 chatters.push({
                     username: user.getUsername(),
                     profileImg: user.getProfileImg(),
@@ -106,11 +93,9 @@ io.on("connection", (socket) => {
     socket.on("leaveRoom", ({ roomname, username, profileImg }) => {
         const message = "has left the chat!";
         const date = new Date();
-        // Get Room
         let room = stateMachine.getRoom(roomname);
-        // Remove Chat User From State
-        room === null || room === void 0 ? void 0 : room.removeChatUser(username);
-        let chatusers = room === null || room === void 0 ? void 0 : room.getChatters();
+        room?.removeChatUser(username);
+        let chatusers = room?.getChatters();
         let chatters = [];
         chatusers.forEach((user, key) => {
             chatters.push({
@@ -119,11 +104,8 @@ io.on("connection", (socket) => {
                 isHost: user.getIsHost(),
             });
         });
-        // Leave Room
         socket.leave(roomname);
-        // State Mutations
         stateMachine.addMessageToRoom(roomname, date, message, username, profileImg, stateMachine.isUserHost(roomname, username));
-        // Emit Events
         socket.broadcast.to(roomname).emit("setChatters", chatters);
         socket
             .to(roomname)
@@ -163,3 +145,4 @@ io.on("connection", (socket) => {
 server.listen(port, () => {
     console.log(`server running on port: ${port}`);
 });
+//# sourceMappingURL=app.js.map
