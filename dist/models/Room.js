@@ -40,4 +40,3 @@ class Room {
     }
 }
 export default Room;
-//# sourceMappingURL=Room.js.map

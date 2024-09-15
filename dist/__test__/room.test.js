@@ -4,4 +4,3 @@ describe("room tests", () => {
     test("getChatters is working", () => { });
 });
 export {};
-//# sourceMappingURL=room.test.js.map

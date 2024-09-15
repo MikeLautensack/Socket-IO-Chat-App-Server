@@ -18,4 +18,3 @@ declare class StateMachine {
     isUserHost(roomname: string, username: string): boolean;
 }
 export default StateMachine;
-//# sourceMappingURL=StateMachine.d.ts.map

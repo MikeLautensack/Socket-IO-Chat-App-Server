@@ -15,4 +15,3 @@ declare class Room {
     removeChatUser(chatter: string): void;
 }
 export default Room;
-//# sourceMappingURL=Room.d.ts.map

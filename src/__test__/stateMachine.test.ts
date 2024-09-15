@@ -1,5 +1,5 @@
-import ChatUser from "../models/ChatUser";
-import StateMachine from "../models/StateMachine";
+import ChatUser from "../models/ChatUser.js";
+import StateMachine from "../models/StateMachine.js";
 
 describe("state machine tests", () => {
   let stateMachine: StateMachine;

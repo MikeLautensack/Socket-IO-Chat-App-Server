@@ -4,9 +4,9 @@
   "main": "app.ts",
   "type": "module",
   "scripts": {
-    "start": "ts-node src/app.ts",
-    "dev": "nodemon --watch src --exec node --loader ts-node/esm src/app.ts",
     "build": "tsc",
+    "start": "node dist/app.js",
+    "dev": "node --loader ts-node/esm src/app.ts",
     "test": "jest --verbose --coverage"
   },
   "author": "",

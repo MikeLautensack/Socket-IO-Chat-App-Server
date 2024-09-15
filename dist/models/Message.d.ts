@@ -12,4 +12,3 @@ declare class Message {
     getIsHost(): boolean;
 }
 export default Message;
-//# sourceMappingURL=Message.d.ts.map

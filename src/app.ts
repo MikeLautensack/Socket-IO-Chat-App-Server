@@ -1,9 +1,9 @@
 import express from "express";
 import { createServer } from "node:http";
 import { Server } from "socket.io";
-import StateMachine from "./models/StateMachine";
-import Message from "./models/Message";
-import ChatUser from "./models/ChatUser";
+import StateMachine from "./models/StateMachine.js";
+import Message from "./models/Message.js";
+import ChatUser from "./models/ChatUser.js";
 
 const app = express();
 const server = createServer(app);

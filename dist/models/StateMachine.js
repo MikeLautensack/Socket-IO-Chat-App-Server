@@ -1,6 +1,6 @@
-import { genId } from "../utils/utils";
-import Message from "./Message";
-import Room from "./Room";
+import { genId } from "../utils/utils.js";
+import Message from "./Message.js";
+import Room from "./Room.js";
 class StateMachine {
     static instance = undefined;
     id;
@@ -57,4 +57,3 @@ class StateMachine {
     }
 }
 export default StateMachine;
-//# sourceMappingURL=StateMachine.js.map

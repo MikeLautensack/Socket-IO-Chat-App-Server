@@ -28,4 +28,3 @@ class Message {
     }
 }
 export default Message;
-//# sourceMappingURL=Message.js.map

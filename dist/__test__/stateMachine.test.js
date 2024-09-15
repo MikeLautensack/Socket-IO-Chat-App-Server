@@ -1,8 +1,9 @@
-import ChatUser from "../models/ChatUser";
-import StateMachine from "../models/StateMachine";
+import ChatUser from "../models/ChatUser.js";
+import StateMachine from "../models/StateMachine.js";
 describe("state machine tests", () => {
     let stateMachine;
     beforeAll(() => {
+        // Server State
         stateMachine = StateMachine.getInstance();
     });
     afterAll(() => { });
@@ -17,4 +18,3 @@ describe("state machine tests", () => {
         expect(messages[0].getProfileImgURL()).toBe("test profile img");
     });
 });
-//# sourceMappingURL=stateMachine.test.js.map

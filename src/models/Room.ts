@@ -1,6 +1,6 @@
 import { userInfo } from "node:os";
-import ChatUser from "./ChatUser";
-import Message from "./Message";
+import ChatUser from "./ChatUser.js";
+import Message from "./Message.js";
 
 class Room {
   private name: string;

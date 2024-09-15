@@ -18,4 +18,3 @@ class ChatUser {
     }
 }
 export default ChatUser;
-//# sourceMappingURL=ChatUser.js.map

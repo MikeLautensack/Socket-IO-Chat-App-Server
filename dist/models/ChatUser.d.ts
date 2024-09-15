@@ -8,4 +8,3 @@ declare class ChatUser {
     getIsHost(): boolean;
 }
 export default ChatUser;
-//# sourceMappingURL=ChatUser.d.ts.map
