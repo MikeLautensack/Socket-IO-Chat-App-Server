@@ -4,6 +4,7 @@ import { Server } from "socket.io";
 import StateMachine from "./models/StateMachine.js";
 import Message from "./models/Message.js";
 import ChatUser from "./models/ChatUser.js";
+import Room from "./models/Room.js";
 
 const app = express();
 const server = createServer(app);
@@ -47,11 +48,20 @@ app.get("/", (req, res) => {
 });
 
 io.on("connection", (socket) => {
-  const rooms = stateMachine.getRoomNames();
+  // Create RoomType array
+  const rooms = stateMachine.getRooms();
+  const roomTypeArr: RoomType[] = [];
+  rooms.forEach((room: Room, roomname: string) => {
+    roomTypeArr.push({
+      host: room.getHost().getUsername(),
+      roomname: roomname,
+    });
+  });
 
   console.log(`Socket: ${socket.id}, has connected to the server`);
 
-  socket.emit("roomList", rooms);
+  // Emit rooms
+  socket.emit("roomList", roomTypeArr);
 
   socket.on("joinRoom", ({ roomname, username, profileImg }) => {
     const message = "has joined the chat!";
@@ -98,13 +108,15 @@ io.on("connection", (socket) => {
       });
     } else {
       let room = stateMachine.getRoom(roomname);
-      room.addChatUser(
-        new ChatUser(
-          username,
-          profileImg,
-          username === room.getHost().getUsername() ? true : false
-        )
-      );
+      if (room) {
+        room.addChatUser(
+          new ChatUser(
+            username,
+            profileImg,
+            username === room.getHost().getUsername() ? true : false
+          )
+        );
+      }
       let chatusers = room?.getChatters();
       let chatters: {
         username: string;
@@ -136,7 +148,18 @@ io.on("connection", (socket) => {
         isHost: false,
       });
     }
-    io.emit("setRooms", stateMachine.getRoomNames());
+
+    // Create RoomType array
+    const roomTypeArr: RoomType[] = [];
+    rooms.forEach((room: Room, roomname: string) => {
+      roomTypeArr.push({
+        host: room.getHost().getUsername(),
+        roomname: roomname,
+      });
+    });
+
+    // Emit rooms
+    io.emit("setRooms", roomTypeArr);
   });
 
   socket.on("leaveRoom", ({ roomname, username, profileImg }) => {
@@ -155,13 +178,15 @@ io.on("connection", (socket) => {
       profileImg: string;
       isHost: boolean;
     }[] = [];
-    chatusers.forEach((user: ChatUser, key) => {
-      chatters.push({
-        username: user.getUsername(),
-        profileImg: user.getProfileImg(),
-        isHost: user.getIsHost(),
+    if (chatusers) {
+      chatusers.forEach((user: ChatUser, key) => {
+        chatters.push({
+          username: user.getUsername(),
+          profileImg: user.getProfileImg(),
+          isHost: user.getIsHost(),
+        });
       });
-    });
+    }
 
     // Leave Room
     socket.leave(roomname);
@@ -181,6 +206,28 @@ io.on("connection", (socket) => {
     socket
       .to(roomname)
       .emit("userLeftRoom", { username, profileImg, roomname, date, message });
+  });
+
+  socket.on("deleteRoom", ({ roomname, username }) => {
+    const room = stateMachine.getRoom(roomname);
+    const roomHost = room!.getHost();
+    const hostUsername = roomHost!.getUsername();
+
+    if (hostUsername === username) {
+      stateMachine.deleteRoom(roomname);
+    }
+
+    const updatedRooms = stateMachine.getRooms();
+    const updatedRoomTypeArr: RoomType[] = [];
+    updatedRooms.forEach((room: Room) => {
+      updatedRoomTypeArr.push({
+        host: room.getHost().getUsername(),
+        roomname: room.getName(),
+      });
+    });
+
+    // Emit rooms
+    io.emit("setRooms", updatedRoomTypeArr);
   });
 
   socket.on("setRoomMessages", (roomname) => {
@@ -231,3 +278,8 @@ io.on("connection", (socket) => {
 server.listen(port, () => {
   console.log(`server running on port: ${port}`);
 });
+
+type RoomType = {
+  host: string;
+  roomname: string;
+};

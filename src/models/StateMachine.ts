@@ -27,9 +27,13 @@ class StateMachine {
     return this.rooms;
   }
 
-  public getRoom(roomname: string): Room {
+  public getRoom(roomname: string): Room | undefined {
     const room = this.rooms.get(roomname);
-    return room!;
+    if (room) {
+      return room;
+    } else {
+      throw new Error("roon not found");
+    }
   }
 
   public getRoomMessages(roomname: string): Message[] {
@@ -44,6 +48,12 @@ class StateMachine {
   public addRoom(roomname: string, host: ChatUser): void {
     if (!this.rooms.has(roomname)) {
       this.rooms.set(roomname, new Room(roomname, host));
+    }
+  }
+
+  public deleteRoom(roomname: string): void {
+    if (this.rooms.has(roomname)) {
+      this.rooms.delete(roomname);
     }
   }
 
